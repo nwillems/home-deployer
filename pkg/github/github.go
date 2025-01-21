@@ -420,11 +420,7 @@ func GenericHandle[T any](payload []byte, hs [](chan T)) error {
 	return nil
 }
 
-func (hook *Webhook) Handle(events ...Event) (http.HandlerFunc, error) {
-	if len(events) == 0 {
-		return nil, ErrEventNotSpecifiedToParse
-	}
-
+func (hook *Webhook) Handle(events ...Event) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Received request from %s", r.RemoteAddr)
 		defer func() {

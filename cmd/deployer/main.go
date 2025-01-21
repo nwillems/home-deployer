@@ -12,18 +12,11 @@ func handlePush(push github.PushPayload) {
 		log.Printf("Ignoring push event for %s", push.Ref)
 		return
 	}
-	
-	
 }
 
 func main() {
 	// do something
 	hook, err := github.New("supersecret")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	handler, err := hook.Handle(github.PushEvent, github.DeploymentEvent)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,11 +32,6 @@ func main() {
 
 	hook.OnPush(pushChan)
 
-	http.Handle("/hook", handler)
-
-	pushChan <- github.PushPayload{
-		Ref: "refs/heads/master",
-	}
-
+	http.Handle("/hook", hook.Handle(github.PushEvent, github.DeploymentEvent))
 	http.ListenAndServe(":8080", nil)
 }

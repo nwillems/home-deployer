@@ -1,0 +1,28 @@
+# Home Deployer
+
+The intent of this is repo two fold, first I had an idea about a github webhook server that would be typesafe and handle things nicely, either by registering handlers or, as is the case now, using channels to receive the events. and Secondly, to allow me to receive push events from github, for rolling out updates to the home-cluster.
+
+And yes, this could be achieved by using github self-hosted runners, as everything is already on github anyways. But whats the fun in that.
+
+## Example usage
+
+See [cmd/deployer/main.go] for a full example
+
+```golang
+func main() {
+	// do something
+	hook, _ := github.New("supersecret")
+	pushChan := make(chan github.PushPayload, 1)
+
+	go func() {
+		for push := range pushChan {
+			handlePush(push)
+		}
+	}()
+
+	hook.OnPush(pushChan)
+
+	http.Handle("/hook", hook.Handle(github.PushEvent))
+	http.ListenAndServe(":8080", nil)
+}
+```
