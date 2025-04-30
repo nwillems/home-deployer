@@ -584,5 +584,5 @@ func (hook *Webhook) Handle(events ...Event) http.HandlerFunc {
 		if err != nil {
 			log.Fatalf("Error processing event", err, string(payload))
 		}
-	}, nil
+	}
 }

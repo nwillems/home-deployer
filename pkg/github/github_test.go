@@ -36,7 +36,7 @@ var hook *Webhook
 func TestMain(m *testing.M) {
 	// setup
 	var err error
-	hook, err = New(Options.Secret("IsWishesWereHorsesWedAllBeEatingSteak!"))
+	hook, err = New("IsWishesWereHorsesWedAllBeEatingSteak!")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -108,7 +108,7 @@ func TestBadRequests(t *testing.T) {
 			t.Parallel()
 			var parseError error
 			server := newServer(func(w http.ResponseWriter, r *http.Request) {
-				_, parseError = hook.Parse(r, tc.event)
+				_, parseError = hook.Handle(r, tc.event)
 			})
 			defer server.Close()
 			req, err := http.NewRequest(http.MethodPost, server.URL+path, tc.payload)
